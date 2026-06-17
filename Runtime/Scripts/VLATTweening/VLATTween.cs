@@ -133,6 +133,8 @@ namespace VLAT
             public float Delay { get; set; }
             public float Elapsed;
             public VLATEaseType Ease { get; set; } = VLATEaseType.Linear;
+            public bool LoopPingPong;
+            public bool PingPongReversing;
             public bool IsCancelled;
             public T From;
             public T To;
@@ -154,10 +156,18 @@ namespace VLAT
                 Elapsed += deltaTime;
                 float progress = Duration <= 0f ? 1f : Mathf.Clamp01(Elapsed / Duration);
                 float easedProgress = VLATEase.Evaluate(Ease, progress);
-                OnUpdate?.Invoke(Lerp(From, To, easedProgress));
+                float tweenProgress = PingPongReversing ? 1f - easedProgress : easedProgress;
+                OnUpdate?.Invoke(Lerp(From, To, tweenProgress));
 
                 if (progress >= 1f)
                 {
+                    if (LoopPingPong)
+                    {
+                        Elapsed = 0f;
+                        PingPongReversing = !PingPongReversing;
+                        return true;
+                    }
+
                     OnComplete?.Invoke();
                     return false;
                 }
@@ -209,6 +219,12 @@ namespace VLAT
             public TweenHandle<T> SetEase(VLATEaseType ease)
             {
                 _tween.Ease = ease;
+                return this;
+            }
+
+            public TweenHandle<T> SetLoopPingPong()
+            {
+                _tween.LoopPingPong = true;
                 return this;
             }
 

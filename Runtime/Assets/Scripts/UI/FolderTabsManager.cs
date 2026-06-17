@@ -31,7 +31,7 @@ namespace VLAT
         public void InitialStart()
         //--------------------------------------//
         {
-            folderTabs[0].rectTrans.LeanMoveLocalY(activeHeight, tabMoveTime).setEaseOutQuad();
+            folderTabs[0].rectTrans.TweenMoveLocalY(activeHeight, tabMoveTime).SetEaseOutQuad();
 
         } // END InitialStart
 
@@ -42,7 +42,7 @@ namespace VLAT
         //--------------------------------------//
         {
             folderTabs[currentActiveTab].highlightCanvGroup.alpha = .0f;
-            folderTabs[currentActiveTab].highlightCanvGroup.LeanAlpha(1f, tabMoveTime).setLoopPingPong();
+            folderTabs[currentActiveTab].highlightCanvGroup.TweenAlpha(1f, tabMoveTime).SetLoopPingPong();
 
         } // END BeginTabbing
 
@@ -52,8 +52,8 @@ namespace VLAT
         public void EndTabbing()
         //--------------------------------------//
         {
-            LeanTween.cancel(folderTabs[currentActiveTab].highlightCanvGroup.gameObject);
-            folderTabs[currentActiveTab].highlightCanvGroup.LeanAlpha(0f, tabMoveTime);
+            VLATTween.Cancel(folderTabs[currentActiveTab].highlightCanvGroup.gameObject);
+            folderTabs[currentActiveTab].highlightCanvGroup.TweenAlpha(0f, tabMoveTime);
 
         } // END EndTabbing
 
@@ -63,9 +63,9 @@ namespace VLAT
         public int TabLeft()
         //--------------------------------------//
         {
-            folderTabs[currentActiveTab].rectTrans.LeanMoveLocalY(hidHeight, tabMoveTime).setEaseOutQuad();
-            LeanTween.cancel(folderTabs[currentActiveTab].highlightCanvGroup.gameObject);
-            folderTabs[currentActiveTab].highlightCanvGroup.LeanAlpha(0f, tabMoveTime);
+            folderTabs[currentActiveTab].rectTrans.TweenMoveLocalY(hidHeight, tabMoveTime).SetEaseOutQuad();
+            VLATTween.Cancel(folderTabs[currentActiveTab].highlightCanvGroup.gameObject);
+            folderTabs[currentActiveTab].highlightCanvGroup.TweenAlpha(0f, tabMoveTime);
 
             currentActiveTab--;
             if (currentActiveTab < 0)
@@ -73,7 +73,7 @@ namespace VLAT
                 currentActiveTab = 3;
             }
 
-            folderTabs[currentActiveTab].rectTrans.LeanMoveLocalY(activeHeight, tabMoveTime).setEaseOutQuad();
+            folderTabs[currentActiveTab].rectTrans.TweenMoveLocalY(activeHeight, tabMoveTime).SetEaseOutQuad();
             BeginTabbing();
 
             return currentActiveTab;
@@ -86,9 +86,9 @@ namespace VLAT
         public int TabRight()
         //--------------------------------------//
         {
-            folderTabs[currentActiveTab].rectTrans.LeanMoveLocalY(hidHeight, tabMoveTime).setEaseOutQuad();
-            LeanTween.cancel(folderTabs[currentActiveTab].highlightCanvGroup.gameObject);
-            folderTabs[currentActiveTab].highlightCanvGroup.LeanAlpha(0f, tabMoveTime);
+            folderTabs[currentActiveTab].rectTrans.TweenMoveLocalY(hidHeight, tabMoveTime).SetEaseOutQuad();
+            VLATTween.Cancel(folderTabs[currentActiveTab].highlightCanvGroup.gameObject);
+            folderTabs[currentActiveTab].highlightCanvGroup.TweenAlpha(0f, tabMoveTime);
 
             currentActiveTab++;
             if (currentActiveTab > 3)
@@ -96,7 +96,7 @@ namespace VLAT
                 currentActiveTab = 0;
             }
 
-            folderTabs[currentActiveTab].rectTrans.LeanMoveLocalY(activeHeight, tabMoveTime).setEaseOutQuad();
+            folderTabs[currentActiveTab].rectTrans.TweenMoveLocalY(activeHeight, tabMoveTime).SetEaseOutQuad();
             BeginTabbing();
 
             return currentActiveTab;

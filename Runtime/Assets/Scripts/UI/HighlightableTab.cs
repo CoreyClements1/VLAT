@@ -35,7 +35,7 @@ namespace VLAT
             {
                 highlighting = true;
                 highlightCanvGroup.alpha = .0f;
-                highlightCanvGroup.LeanAlpha(1f, 0.25f).setLoopPingPong();
+                highlightCanvGroup.TweenAlpha(1f, 0.25f).SetLoopPingPong();
             }
 
         } // END StartHighlighting
@@ -49,8 +49,8 @@ namespace VLAT
             if (highlighting)
             {
                 highlighting = false;
-                LeanTween.cancel(highlightCanvGroup.gameObject);
-                highlightCanvGroup.LeanAlpha(0f, 0.25f);
+                VLATTween.Cancel(highlightCanvGroup.gameObject);
+                highlightCanvGroup.TweenAlpha(0f, 0.25f);
             }
 
         } // END EndHighlight

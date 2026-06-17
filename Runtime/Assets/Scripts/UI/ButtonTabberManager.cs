@@ -30,7 +30,7 @@ namespace VLAT
         //--------------------------------------//
         {
             highlightableTabs[currentActiveTab].highlightCanvGroup.alpha = .0f;
-            highlightableTabs[currentActiveTab].highlightCanvGroup.LeanAlpha(1f, tabMoveTime).setLoopPingPong();
+            highlightableTabs[currentActiveTab].highlightCanvGroup.TweenAlpha(1f, tabMoveTime).SetLoopPingPong();
 
         } // END BeginTabbing
 
@@ -40,8 +40,8 @@ namespace VLAT
         public void EndTabbing()
         //--------------------------------------//
         {
-            LeanTween.cancel(highlightableTabs[currentActiveTab].highlightCanvGroup.gameObject);
-            highlightableTabs[currentActiveTab].highlightCanvGroup.LeanAlpha(0f, tabMoveTime);
+            VLATTween.Cancel(highlightableTabs[currentActiveTab].highlightCanvGroup.gameObject);
+            highlightableTabs[currentActiveTab].highlightCanvGroup.TweenAlpha(0f, tabMoveTime);
 
         } // END EndTabbing
 
@@ -51,7 +51,7 @@ namespace VLAT
         public void ResetTabbing()
         //--------------------------------------//
         {
-            LeanTween.cancel(highlightableTabs[currentActiveTab].highlightCanvGroup.gameObject);
+            VLATTween.Cancel(highlightableTabs[currentActiveTab].highlightCanvGroup.gameObject);
             highlightableTabs[currentActiveTab].highlightCanvGroup.alpha = 0f;
             currentActiveTab = 0;
             BeginTabbing();

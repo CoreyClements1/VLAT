@@ -497,12 +497,12 @@ namespace VLAT
         private void OpenSettings()
         //--------------------------------------//
         {
-            settingsCanvasGroup.LeanAlpha(1f, .25f);
+            settingsCanvasGroup.TweenAlpha(1f, .25f);
 
-            transform.LeanMoveLocalY(settingsStartPosY + (settingsNewSize - settingsStartPosY) / 2f, .25f).setEaseOutQuad();
+            transform.TweenMoveLocalY(settingsStartPosY + (settingsNewSize - settingsStartPosY) / 2f, .25f).SetEaseOutQuad();
 
             RectTransform rectTrans = mainAreaManager.GetComponent<RectTransform>();
-            LeanTween.value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsNewSize, .25f).setEaseOutQuad().setOnUpdate((value) =>
+            VLATTween.Value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsNewSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
             {
                 rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, value);
             });
@@ -520,12 +520,12 @@ namespace VLAT
         private void CloseSettings()
         //--------------------------------------//
         {
-            settingsCanvasGroup.LeanAlpha(0f, .25f);
+            settingsCanvasGroup.TweenAlpha(0f, .25f);
 
-            transform.LeanMoveLocalY(settingsStartPosY, .25f).setEaseOutQuad();
+            transform.TweenMoveLocalY(settingsStartPosY, .25f).SetEaseOutQuad();
 
             RectTransform rectTrans = mainAreaManager.GetComponent<RectTransform>();
-            LeanTween.value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsOldSize, .25f).setEaseOutQuad().setOnUpdate((value) =>
+            VLATTween.Value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsOldSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
             {
                 rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, value);
             });
