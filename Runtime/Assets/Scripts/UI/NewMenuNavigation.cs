@@ -502,9 +502,15 @@ namespace VLAT
             transform.TweenMoveLocalY(settingsStartPosY + (settingsNewSize - settingsStartPosY) / 2f, .25f).SetEaseOutQuad();
 
             RectTransform rectTrans = mainAreaManager.GetComponent<RectTransform>();
-            VLATTween.Value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsNewSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
+            GameObject mainAreaTarget = mainAreaManager.gameObject;
+            VLATTween.Value(mainAreaTarget, rectTrans.sizeDelta.y, settingsNewSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
             {
-                rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, value);
+                if (mainAreaTarget == null)
+                    return;
+
+                RectTransform rect = mainAreaTarget.GetComponent<RectTransform>();
+                if (rect != null)
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, value);
             });
 
             mainAreaManager.HideCanvGroups();
@@ -525,9 +531,15 @@ namespace VLAT
             transform.TweenMoveLocalY(settingsStartPosY, .25f).SetEaseOutQuad();
 
             RectTransform rectTrans = mainAreaManager.GetComponent<RectTransform>();
-            VLATTween.Value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsOldSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
+            GameObject mainAreaTarget = mainAreaManager.gameObject;
+            VLATTween.Value(mainAreaTarget, rectTrans.sizeDelta.y, settingsOldSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
             {
-                rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, value);
+                if (mainAreaTarget == null)
+                    return;
+
+                RectTransform rect = mainAreaTarget.GetComponent<RectTransform>();
+                if (rect != null)
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, value);
             });
 
             mainAreaManager.SwapCanvasGroups(3);

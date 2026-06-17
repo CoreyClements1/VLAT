@@ -70,6 +70,7 @@ namespace VLAT
             {
                 Id = _nextId++,
                 Target = target,
+                HasTarget = target != null,
                 From = from,
                 To = to,
                 Duration = Mathf.Max(0f, duration),
@@ -105,6 +106,8 @@ namespace VLAT
 
         private static void Tick(float deltaTime)
         {
+            CleanupDestroyedTargetEntries();
+
             for (int i = ActiveTweens.Count - 1; i >= 0; i--)
             {
                 if (!ActiveTweens[i].Step(deltaTime))
@@ -115,6 +118,29 @@ namespace VLAT
             }
         }
 
+        private static void CleanupDestroyedTargetEntries()
+        {
+            if (TweensByTarget.Count == 0)
+                return;
+
+            List<GameObject> destroyedTargets = null;
+
+            foreach (KeyValuePair<GameObject, List<ITweenInstance>> entry in TweensByTarget)
+            {
+                if (entry.Key != null)
+                    continue;
+
+                destroyedTargets ??= new List<GameObject>();
+                destroyedTargets.Add(entry.Key);
+            }
+
+            if (destroyedTargets == null)
+                return;
+
+            for (int i = 0; i < destroyedTargets.Count; i++)
+                TweensByTarget.Remove(destroyedTargets[i]);
+        }
+
         internal interface ITweenInstance
         {
             GameObject Target { get; }
@@ -123,12 +149,14 @@ namespace VLAT
             VLATEaseType Ease { get; set; }
             bool Step(float deltaTime);
             void Cancel();
+            bool HasTarget { get; }
         }
 
         internal sealed class TweenInstance<T> : ITweenInstance
         {
             public int Id;
             public GameObject Target { get; set; }
+            public bool HasTarget { get; set; }
             public float Duration { get; set; }
             public float Delay { get; set; }
             public float Elapsed;
@@ -145,6 +173,9 @@ namespace VLAT
             public bool Step(float deltaTime)
             {
                 if (IsCancelled)
+                    return false;
+
+                if (HasTarget && Target == null)
                     return false;
 
                 if (Delay > 0f)

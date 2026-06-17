@@ -112,6 +112,7 @@ namespace VLAT
         {
             for (int i = 0; i < highlightableTabs.Count; i++)
             {
+                VLATTween.Cancel(highlightableTabs[i].gameObject);
                 Destroy(highlightableTabs[i].gameObject);
             }
 
