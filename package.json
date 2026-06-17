@@ -1,0 +1,32 @@
+{
+  "name": "com.vera.vlat",
+  "version": "0.0.1",
+  "displayName": "VLAT",
+  "description": "The VERA Locomotion Accessibility Toolkit (VLAT) is a toolkit for creating accessible VR environments.",
+  "unity": "6000.0",
+  "author": {
+    "name": "VERA",
+    "email": "veraccel@ucf.edu",
+    "url": "https://vera-xr.io"
+  },
+  "keywords": [
+    "VR",
+    "Research",
+    "XR",
+    "Interaction",
+    "Virtual Reality",
+    "Education",
+    "Accessibility",
+    "Locomotion"
+  ],
+  "dependencies": {
+    "com.unity.inputsystem": "1.7.0",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.xr.interaction.toolkit": "3.0.3",
+    "com.unity.xr.management": "4.4.0",
+    "com.unity.xr.oculus": "4.2.0"
+  },
+  "documentationUrl": "https://vera-xr.io/documentation",
+  "hideInEditor": false
+}
+
