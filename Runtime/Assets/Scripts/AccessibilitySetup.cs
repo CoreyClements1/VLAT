@@ -393,7 +393,7 @@ namespace VLAT
                     NewMenuNavigation menuNav = FindObjectOfType<NewMenuNavigation>();
 #endif
                         if (menuNav != null)
-                            menuNav.ResetBindingDisplayName(currentRebindIndex, PrettifyPath(rebindActions[currentRebindIndex].action.bindings[0].effectivePath));
+                            menuNav.ResetBindingDisplayName(currentRebindIndex, BindingDisplayFormatter.Format(rebindActions[currentRebindIndex].action.bindings[0].effectivePath));
 
                         // Transition to next display
                         anyButtonControl = null;

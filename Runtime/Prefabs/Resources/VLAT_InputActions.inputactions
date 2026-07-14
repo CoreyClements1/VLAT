@@ -1,5 +1,6 @@
 {
-    "name": "InputActions",
+    "version": 1,
+    "name": "VLAT_InputActions",
     "maps": [
         {
             "name": "VlatControls",

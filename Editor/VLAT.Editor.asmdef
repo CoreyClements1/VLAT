@@ -1,0 +1,18 @@
+{
+    "name": "VLAT.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:45f4544aee7051148be1633cd329da13"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
