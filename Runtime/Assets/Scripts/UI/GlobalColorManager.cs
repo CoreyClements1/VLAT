@@ -41,14 +41,14 @@ namespace VLAT
         #region MONOBEHAVIOUR
 
 
-        // Start
+        // Awake so Instance is ready before other components' Start() calls
         //--------------------------------------//
-        void Start()
+        void Awake()
         //--------------------------------------//
         {
             InitSingleton();
 
-        } // END Start
+        } // END Awake
 
 
         // Inits singleton
@@ -56,9 +56,10 @@ namespace VLAT
         private void InitSingleton()
         //--------------------------------------//
         {
-            if (Instance != null)
+            if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
 
             Instance = this;

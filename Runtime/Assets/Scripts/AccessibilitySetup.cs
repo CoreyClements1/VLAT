@@ -52,7 +52,7 @@ namespace VLAT
             // Ensure all items in display area are hidden
             foreach (Transform child in displayAreaParent)
             {
-                LeanTween.cancel(child.gameObject);
+                VLATTween.Cancel(child.gameObject);
                 child.GetComponent<CanvasGroup>().alpha = 0f;
                 child.gameObject.SetActive(false);
             }
@@ -63,8 +63,8 @@ namespace VLAT
             firstItemCanvGroup.alpha = 1f;
 
             // Fade in menu
-            LeanTween.cancel(gameObject);
-            GetComponent<CanvasGroup>().LeanAlpha(1f, transitionTime);
+            VLATTween.Cancel(gameObject);
+            GetComponent<CanvasGroup>().TweenAlpha(1f, transitionTime);
             HandleNewDisplay();
 
             // Set up "any button press" listening
@@ -91,7 +91,7 @@ namespace VLAT
         {
             // Hide this menu, and show main VLAT menu
             transitioning = true;
-            GetComponent<CanvasGroup>().LeanAlpha(0f, transitionTime);
+            GetComponent<CanvasGroup>().TweenAlpha(0f, transitionTime);
             VLAT_Options.Instance.ShowVlatMenu();
 
             yield return new WaitForSeconds(transitionTime);
@@ -119,7 +119,7 @@ namespace VLAT
         {
             // Hide this menu
             transitioning = true;
-            GetComponent<CanvasGroup>().LeanAlpha(0f, transitionTime);
+            GetComponent<CanvasGroup>().TweenAlpha(0f, transitionTime);
 
             yield return new WaitForSeconds(transitionTime);
 
@@ -197,7 +197,7 @@ namespace VLAT
         //--------------------------------------//
         {
             CanvasGroup canvGroup = displayAreaParent.GetChild(displayIndex).gameObject.GetComponent<CanvasGroup>();
-            canvGroup.LeanAlpha(0f, transitionTime);
+            canvGroup.TweenAlpha(0f, transitionTime);
 
             yield return new WaitForSeconds(transitionTime);
 
@@ -213,7 +213,7 @@ namespace VLAT
         {
             CanvasGroup canvGroup = displayAreaParent.GetChild(displayIndex).gameObject.GetComponent<CanvasGroup>();
             canvGroup.gameObject.SetActive(true);
-            canvGroup.LeanAlpha(1f, transitionTime);
+            canvGroup.TweenAlpha(1f, transitionTime);
 
             yield return new WaitForSeconds(transitionTime);
 
@@ -393,7 +393,7 @@ namespace VLAT
                     NewMenuNavigation menuNav = FindObjectOfType<NewMenuNavigation>();
 #endif
                         if (menuNav != null)
-                            menuNav.ResetBindingDisplayName(currentRebindIndex, PrettifyPath(rebindActions[currentRebindIndex].action.bindings[0].effectivePath));
+                            menuNav.ResetBindingDisplayName(currentRebindIndex, BindingDisplayFormatter.Format(rebindActions[currentRebindIndex].action.bindings[0].effectivePath));
 
                         // Transition to next display
                         anyButtonControl = null;

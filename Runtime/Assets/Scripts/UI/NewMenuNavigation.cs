@@ -60,6 +60,8 @@ namespace VLAT
         private bool navDeactivated = false;
 
         [SerializeField] private TMP_Text[] inputNameTexts = new TMP_Text[4];
+        [Tooltip("On-screen Back tabs (Look / Move / Interact). Shown in 2-input mode only.")]
+        [SerializeField] private HighlightableTab[] backButtons;
         [SerializeField] private AccessibilitySetup setupPrefab;
 
 
@@ -107,7 +109,29 @@ namespace VLAT
             settingsStartPosY = transform.localPosition.y;
             defaultLocalY = transform.GetChild(0).localPosition.y;
 
+            RefreshBindingDisplaysFromInputActions();
+
         } // END Setup
+
+
+        /// <summary>
+        /// Sets control-indicator labels from the active InputAction bindings
+        /// (used for defaults before participant rebinds are applied).
+        /// </summary>
+        public void RefreshBindingDisplaysFromInputActions()
+        {
+            InputActionAsset asset = VLATInputActions.Asset;
+            if (asset == null)
+                return;
+
+            for (int i = 0; i < inputNameTexts.Length; i++)
+            {
+                InputAction action = asset.FindAction("Switch" + (i + 1));
+                string displayName = BindingDisplayFormatter.FromAction(action);
+                if (!string.IsNullOrEmpty(displayName))
+                    ResetBindingDisplayName(i, displayName);
+            }
+        }
 
 
         // Shows the setup and rebind screen
@@ -126,9 +150,42 @@ namespace VLAT
         public void ResetBindingDisplayName(int idx, string name)
         //--------------------------------------//
         {
+            if (idx < 0 || idx >= inputNameTexts.Length || inputNameTexts[idx] == null)
+                return;
+
             inputNameTexts[idx].text = name;
 
         } // END ResetBindingDisplays
+
+
+        /// <summary>
+        /// Shows/hides on-screen Back tabs and unused control indicators for the
+        /// active switch-input scheme (2-input vs 4-input).
+        /// </summary>
+        public void ApplyInputSchemeVisuals(bool twoInput)
+        {
+            if (backButtons != null)
+            {
+                for (int i = 0; i < backButtons.Length; i++)
+                {
+                    if (backButtons[i] != null)
+                        backButtons[i].gameObject.SetActive(twoInput);
+                }
+            }
+
+            // Control indicators B1–B4 map to indices 0–3. In 2-input mode only
+            // next (1) and select (2) stay visible.
+            for (int i = 0; i < inputNameTexts.Length; i++)
+            {
+                if (inputNameTexts[i] == null)
+                    continue;
+
+                bool used = !twoInput || i == 1 || i == 2;
+                Transform panel = inputNameTexts[i].transform.parent;
+                if (panel != null)
+                    panel.gameObject.SetActive(used);
+            }
+        }
 
 
         #endregion
@@ -308,6 +365,10 @@ namespace VLAT
                         case 2:
                             uiInputDistributor.LookReset();
                             break;
+                        case 3:
+                            // Back button
+                            Button4(ctx);
+                            break;
                     }
                     break;
 
@@ -324,6 +385,10 @@ namespace VLAT
                         case 2:
                             uiInputDistributor.TurnRight();
                             break;
+                        case 3:
+                            // Back button
+                            Button4(ctx);
+                            break;
                     }
                     break;
 
@@ -332,12 +397,16 @@ namespace VLAT
                     switch (currentButtonHighlight)
                     {
                         case 0:
-                            uiInputDistributor.HighlightAll();
-                            interactionsMenuManager.HighlightedAll();
+                            if (uiInputDistributor.HighlightAll())
+                                interactionsMenuManager.HighlightedAll();
+                            else
+                                AccessibilityNotification.Instance.ShowNotification("No nearby interactables");
                             break;
                         case 1:
-                            uiInputDistributor.SelectNext();
-                            interactionsMenuManager.SelectedNext();
+                            if (uiInputDistributor.SelectNext())
+                                interactionsMenuManager.SelectedNext();
+                            else
+                                AccessibilityNotification.Instance.ShowNotification("No nearby interactables");
                             break;
                         case 2:
                             if (interactionsMenuManager.CanViewInteractions())
@@ -356,6 +425,10 @@ namespace VLAT
                             {
                                 AccessibilityNotification.Instance.ShowNotification("No object is selected");
                             }
+                            break;
+                        case 3:
+                            // Back button
+                            Button4(ctx);
                             break;
                     }
                     break;
@@ -497,14 +570,20 @@ namespace VLAT
         private void OpenSettings()
         //--------------------------------------//
         {
-            settingsCanvasGroup.LeanAlpha(1f, .25f);
+            settingsCanvasGroup.TweenAlpha(1f, .25f);
 
-            transform.LeanMoveLocalY(settingsStartPosY + (settingsNewSize - settingsStartPosY) / 2f, .25f).setEaseOutQuad();
+            transform.TweenMoveLocalY(settingsStartPosY + (settingsNewSize - settingsStartPosY) / 2f, .25f).SetEaseOutQuad();
 
             RectTransform rectTrans = mainAreaManager.GetComponent<RectTransform>();
-            LeanTween.value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsNewSize, .25f).setEaseOutQuad().setOnUpdate((value) =>
+            GameObject mainAreaTarget = mainAreaManager.gameObject;
+            VLATTween.Value(mainAreaTarget, rectTrans.sizeDelta.y, settingsNewSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
             {
-                rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, value);
+                if (mainAreaTarget == null)
+                    return;
+
+                RectTransform rect = mainAreaTarget.GetComponent<RectTransform>();
+                if (rect != null)
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, value);
             });
 
             mainAreaManager.HideCanvGroups();
@@ -520,14 +599,20 @@ namespace VLAT
         private void CloseSettings()
         //--------------------------------------//
         {
-            settingsCanvasGroup.LeanAlpha(0f, .25f);
+            settingsCanvasGroup.TweenAlpha(0f, .25f);
 
-            transform.LeanMoveLocalY(settingsStartPosY, .25f).setEaseOutQuad();
+            transform.TweenMoveLocalY(settingsStartPosY, .25f).SetEaseOutQuad();
 
             RectTransform rectTrans = mainAreaManager.GetComponent<RectTransform>();
-            LeanTween.value(mainAreaManager.gameObject, rectTrans.sizeDelta.y, settingsOldSize, .25f).setEaseOutQuad().setOnUpdate((value) =>
+            GameObject mainAreaTarget = mainAreaManager.gameObject;
+            VLATTween.Value(mainAreaTarget, rectTrans.sizeDelta.y, settingsOldSize, .25f).SetEaseOutQuad().SetOnUpdate((value) =>
             {
-                rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, value);
+                if (mainAreaTarget == null)
+                    return;
+
+                RectTransform rect = mainAreaTarget.GetComponent<RectTransform>();
+                if (rect != null)
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, value);
             });
 
             mainAreaManager.SwapCanvasGroups(3);

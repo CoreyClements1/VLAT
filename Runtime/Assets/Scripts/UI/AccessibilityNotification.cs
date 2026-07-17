@@ -65,7 +65,7 @@ namespace VLAT
             if (notificationCoroutine != null)
                 StopCoroutine(notificationCoroutine);
 
-            LeanTween.cancel(gameObject);
+            VLATTween.Cancel(gameObject);
 
             canvGroup.alpha = 0f;
             transform.localPosition = startPosLocal;
@@ -82,12 +82,12 @@ namespace VLAT
         private IEnumerator ShowNotifCoroutine()
         //--------------------------------------//
         {
-            transform.LeanMoveLocal(endPosLocal, animTime).setEaseOutQuad();
-            canvGroup.LeanAlpha(1f, animTime);
+            transform.TweenMoveLocal(endPosLocal, animTime).SetEaseOutQuad();
+            canvGroup.TweenAlpha(1f, animTime);
 
             yield return new WaitForSeconds(notificationDuration);
 
-            canvGroup.LeanAlpha(0f, animTime);
+            canvGroup.TweenAlpha(0f, animTime);
 
         } // END ShowNotifCoroutine
 

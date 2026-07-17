@@ -70,6 +70,7 @@ namespace VLAT
             {
                 Id = _nextId++,
                 Target = target,
+                HasTarget = target != null,
                 From = from,
                 To = to,
                 Duration = Mathf.Max(0f, duration),
@@ -105,6 +106,8 @@ namespace VLAT
 
         private static void Tick(float deltaTime)
         {
+            CleanupDestroyedTargetEntries();
+
             for (int i = ActiveTweens.Count - 1; i >= 0; i--)
             {
                 if (!ActiveTweens[i].Step(deltaTime))
@@ -115,6 +118,29 @@ namespace VLAT
             }
         }
 
+        private static void CleanupDestroyedTargetEntries()
+        {
+            if (TweensByTarget.Count == 0)
+                return;
+
+            List<GameObject> destroyedTargets = null;
+
+            foreach (KeyValuePair<GameObject, List<ITweenInstance>> entry in TweensByTarget)
+            {
+                if (entry.Key != null)
+                    continue;
+
+                destroyedTargets ??= new List<GameObject>();
+                destroyedTargets.Add(entry.Key);
+            }
+
+            if (destroyedTargets == null)
+                return;
+
+            for (int i = 0; i < destroyedTargets.Count; i++)
+                TweensByTarget.Remove(destroyedTargets[i]);
+        }
+
         internal interface ITweenInstance
         {
             GameObject Target { get; }
@@ -123,16 +149,20 @@ namespace VLAT
             VLATEaseType Ease { get; set; }
             bool Step(float deltaTime);
             void Cancel();
+            bool HasTarget { get; }
         }
 
         internal sealed class TweenInstance<T> : ITweenInstance
         {
             public int Id;
             public GameObject Target { get; set; }
+            public bool HasTarget { get; set; }
             public float Duration { get; set; }
             public float Delay { get; set; }
             public float Elapsed;
             public VLATEaseType Ease { get; set; } = VLATEaseType.Linear;
+            public bool LoopPingPong;
+            public bool PingPongReversing;
             public bool IsCancelled;
             public T From;
             public T To;
@@ -145,6 +175,9 @@ namespace VLAT
                 if (IsCancelled)
                     return false;
 
+                if (HasTarget && Target == null)
+                    return false;
+
                 if (Delay > 0f)
                 {
                     Delay -= deltaTime;
@@ -154,10 +187,18 @@ namespace VLAT
                 Elapsed += deltaTime;
                 float progress = Duration <= 0f ? 1f : Mathf.Clamp01(Elapsed / Duration);
                 float easedProgress = VLATEase.Evaluate(Ease, progress);
-                OnUpdate?.Invoke(Lerp(From, To, easedProgress));
+                float tweenProgress = PingPongReversing ? 1f - easedProgress : easedProgress;
+                OnUpdate?.Invoke(Lerp(From, To, tweenProgress));
 
                 if (progress >= 1f)
                 {
+                    if (LoopPingPong)
+                    {
+                        Elapsed = 0f;
+                        PingPongReversing = !PingPongReversing;
+                        return true;
+                    }
+
                     OnComplete?.Invoke();
                     return false;
                 }
@@ -209,6 +250,12 @@ namespace VLAT
             public TweenHandle<T> SetEase(VLATEaseType ease)
             {
                 _tween.Ease = ease;
+                return this;
+            }
+
+            public TweenHandle<T> SetLoopPingPong()
+            {
+                _tween.LoopPingPong = true;
                 return this;
             }
 

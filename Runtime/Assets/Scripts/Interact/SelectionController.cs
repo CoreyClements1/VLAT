@@ -122,14 +122,15 @@ namespace VLAT
 
         // SelectionCycle
         //--------------------------------------//
-        public void SelectionCycle()
+        public bool SelectionCycle()
         //--------------------------------------//
         {
             // Cancel highlighting if all highlighted
             PulseCancelHighlights();
 
             List<VLAT_Interactable> nearbyInters = GetVisibleNearbyInteractables();
-            if (nearbyInters.Count == 0) { return; } // If there is nothing to select, skip for now
+            if (nearbyInters.Count == 0)
+                return false;
 
             // If the nearby interactables are different from that stored from last frame...
             if (!interactables.SequenceEqual(nearbyInters))
@@ -178,6 +179,8 @@ namespace VLAT
             if (counter == interactables.Count - 1)
                 counter = 0;
             else counter++;
+
+            return true;
 
         } // END SelectionCycle
 
@@ -445,11 +448,14 @@ namespace VLAT
 
         // Highlights all nearby selectables
         //--------------------------------------//
-        public void HighlightAll()
+        public bool HighlightAll()
         //--------------------------------------//
         {
-            if (!UpdateSelectables()) return; // If there is nothing to select, skip for now
+            if (!UpdateSelectables())
+                return false;
+
             StartCoroutine(highlight());
+            return true;
 
         } // END HighlightAll
 

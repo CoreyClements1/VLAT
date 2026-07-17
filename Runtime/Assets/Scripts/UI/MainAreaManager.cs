@@ -61,11 +61,11 @@ namespace VLAT
             {
                 if (i == newCanvGroup)
                 {
-                    areaCanvasGroups[i].LeanAlpha(1f, FolderTabsManager.tabMoveTime);
+                    areaCanvasGroups[i].TweenAlpha(1f, FolderTabsManager.tabMoveTime);
                 }
                 else
                 {
-                    areaCanvasGroups[i].LeanAlpha(0f, FolderTabsManager.tabMoveTime);
+                    areaCanvasGroups[i].TweenAlpha(0f, FolderTabsManager.tabMoveTime);
                 }
             }
 
@@ -79,7 +79,7 @@ namespace VLAT
         {
             for (int i = 0; i < areaCanvasGroups.Length; i++)
             {
-                areaCanvasGroups[i].LeanAlpha(0f, FolderTabsManager.tabMoveTime);
+                areaCanvasGroups[i].TweenAlpha(0f, FolderTabsManager.tabMoveTime);
             }
 
         } // END HideCanvGroups

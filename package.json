@@ -20,6 +20,7 @@
     "Locomotion"
   ],
   "dependencies": {
+    "com.vera.vera": "0.3.3",
     "com.unity.inputsystem": "1.7.0",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.xr.interaction.toolkit": "3.0.3",

@@ -132,20 +132,20 @@ namespace VLAT
 
         // HighlightAll
         //--------------------------------------//
-        public void HighlightAll()
+        public bool HighlightAll()
         //--------------------------------------//
         {
-            selectionController.HighlightAll();
+            return selectionController.HighlightAll();
 
         } // END HighlightAll
 
 
         // SelectNext
         //--------------------------------------//
-        public void SelectNext()
+        public bool SelectNext()
         //--------------------------------------//
         {
-            selectionController.SelectionCycle();
+            return selectionController.SelectionCycle();
 
         } // END SelectNext
 
