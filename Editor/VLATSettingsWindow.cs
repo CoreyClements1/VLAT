@@ -111,10 +111,6 @@ namespace VLAT
         private void DrawHeader()
         {
             GUILayout.Label("VLAT Settings", headerTitleStyle);
-            GUILayout.Space(2);
-            GUILayout.Label(
-                "Project-wide locomotion and accessibility options. XR Origin and controller hands are resolved automatically.",
-                headerSubtitleStyle);
             GUILayout.Space(6);
             DrawSeparator();
             GUILayout.Space(6);
