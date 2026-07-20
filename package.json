@@ -1,6 +1,6 @@
 {
   "name": "com.vera.vlat",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "displayName": "VLAT",
   "description": "The VERA Locomotion Accessibility Toolkit (VLAT) is a toolkit for creating accessible VR environments.",
   "unity": "6000.0",
